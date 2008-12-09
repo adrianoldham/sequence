@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" charset="utf-8" src="../lib/prototype.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../lib/scriptaculous.js?load=effects"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/helper.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/sequence.js"></script>
+    
+	<title>index</title>
+	
+	<style type="text/css" media="screen">
+	    body {
+	        text-align: center;
+	    }
+	
+	    #sequence, #sequence2 {
+	        width: 400px;
+	        height: 52px;
+	        position: relative;
+	        border: 1px solid #999;
+	        padding: 20px;
+	        margin:  auto;
+	    }
+	    
+	   .container {
+	       width: 400px;
+	       height: 60px;
+	   }
+	   
+	   .container a {
+	       margin: 0 10px;
+	       display: block;
+	       height: 50px;
+	   }
+	   
+	   .container a img {
+	       background-color: #fff;
+  	       border-style: none;
+	       border: 1px dashed #999;
+	       padding: 2px;
+	   }
+	   
+	   .container a.first {
+	       margin-left: 0 !important;
+	   }
+	   
+	   .container a.last {
+	       margin-right: 0 !important;
+	   }
+	   
+	   .container a.focused {
+	       border-bottom: 2px solid #999;
+	   }
+
+       .previous-page, .previous-disabled {
+           width: 30px;
+           height: 30px;
+           position: absolute;
+           left: -15px;
+           top: 30px;
+           background: transparent url(images/left.png) no-repeat;            
+           cursor: pointer;
+       }
+
+		.previous-disabled {
+            background: none;
+		}
+       
+       .next-page, .next-disabled {
+           width: 30px;
+           height: 30px;
+           position: absolute;
+           right: -15px;
+           top: 30px;
+           background: transparent url(images/right.png) no-repeat;
+           cursor: pointer;     
+       }
+
+		.next-disabled {
+            background: none;
+		}
+
+	</style>
+</head>
+
+<body>
+    <h3>Smooth Scroll<h3>
+    <div id="sequence">
+        <div class="container">
+            <a href="#"><img src="images/1.gif"/></a>
+            <a href="#"><img src="images/2.gif"/></a>
+            <a href="#"><img src="images/3.gif"/></a>
+            <a href="#"><img src="images/4.gif"/></a>
+            <a href="#"><img src="images/5.gif"/></a>
+            <a href="#"><img src="images/6.gif"/></a>
+            <a href="#"><img src="images/7.gif"/></a>
+        </div>
+    </div>
+
+    <h3>Snap Scroll<h3>
+    <div id="sequence2">
+        <div class="container">
+            <a href="#"><img src="images/1.gif"/></a>
+            <a href="#"><img src="images/2.gif"/></a>
+            <a href="#"><img src="images/3.gif"/></a>
+            <a href="#"><img src="images/4.gif"/></a>
+            <a href="#"><img src="images/5.gif"/></a>
+            <a href="#"><img src="images/6.gif"/></a>
+            <a href="#"><img src="images/7.gif"/></a>
+        </div>
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+        function runTest() {
+            new Sequence("sequence", "#sequence a");
+            new Sequence("sequence2", "#sequence2 a", { smoothScroll: false });
+        }
+        
+        Event.observe(window, "load", runTest);
+    </script>
+</body>
+</html>
