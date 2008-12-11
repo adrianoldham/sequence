@@ -12,82 +12,150 @@
 	<title>index</title>
 	
 	<style type="text/css" media="screen">
-	    body {
-	        text-align: center;
-	    }
+        body {
+            text-align: center;
+        }
 	
-	    #sequence, #sequence2 {
-	        width: 400px;
+        #sequence, #sequence2 {
+            width: 400px;
 	        height: 52px;
 	        position: relative;
 	        border: 1px solid #999;
 	        padding: 20px;
 	        margin:  auto;
-	    }
-	    
-	   .container {
-	       width: 400px;
-	       height: 60px;
-	   }
-	   
-	   .container a {
-	       margin: 0 10px;
-	       display: block;
-	       height: 50px;
-	   }
-	   
-	   .container a img {
-	       background-color: #fff;
-  	       border-style: none;
-	       border: 1px dashed #999;
-	       padding: 2px;
-	   }
-	   
-	   .container a.first {
-	       margin-left: 0 !important;
-	   }
-	   
-	   .container a.last {
-	       margin-right: 0 !important;
-	   }
-	   
-	   .container a.focused {
-	       border-bottom: 2px solid #999;
-	   }
+        }
+        .container {
+            width: 400px;
+            height: 60px;
+        }
 
-       .previous-page, .previous-disabled {
-           width: 30px;
-           height: 30px;
-           position: absolute;
-           left: -15px;
-           top: 30px;
-           background: transparent url(images/left.png) no-repeat;            
-           cursor: pointer;
-       }
+        .container a {
+            margin: 0 10px;
+            display: block;
+            height: 50px;
+        }
 
-		.previous-disabled {
+        .container a img {
+            background-color: #fff;
+            border-style: none;
+            border: 1px dashed #999;
+            padding: 2px;
+        }
+
+        .container a.first {
+            margin-left: 0 !important;
+        }
+
+        .container a.last {
+            margin-right: 0 !important;
+        }
+
+        .container a.focused {
+            border-bottom: 2px solid #999;
+        }
+
+        .previous-page, .previous-disabled {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            left: -15px;
+            top: 30px;
+            background: transparent url(images/left.png) no-repeat;            
+            cursor: pointer;
+        }
+
+        .previous-disabled {
             background: none;
-		}
-       
-       .next-page, .next-disabled {
-           width: 30px;
-           height: 30px;
-           position: absolute;
-           right: -15px;
-           top: 30px;
-           background: transparent url(images/right.png) no-repeat;
-           cursor: pointer;     
-       }
+        }
 
-		.next-disabled {
+        .next-page, .next-disabled {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -15px;
+            top: 30px;
+            background: transparent url(images/right.png) no-repeat;
+            cursor: pointer;     
+        }
+
+        .next-disabled {
             background: none;
-		}
+        }
 
+        #sequence3 {
+	        width: 140px;
+            height: 156px;
+            position: relative;
+	        border: 1px solid #999;
+	        padding: 20px 10px;
+	        margin:  auto;
+        }
+
+        #sequence3 .container {
+            width: 140px;
+            height: 156px;
+        }
+
+        #sequence3 .container a {
+            margin: 5px 10px;
+            display: block;
+            height: 47px;
+            background-color: #ccc;
+            border-bottom: 2px solid #fff;
+        }
+
+        #sequence .container a img {
+            background-color: #fff;
+            border-style: none;
+            border: 1px dashed #999;
+            padding: 2px;
+        }
+
+        #sequence3 .container a.first {
+            margin: 0 10px 5px 10px !important;
+        }
+
+        #sequence3 .container a.last {
+            margin: 5px 10px 0 10px !important;
+        }
+
+        #sequence3 .container a.focused {
+            border-color: #000;
+        }
+
+        #sequence3 .up-page, #sequence3 .up-disabled {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            left: 65px;
+            top: -16px;
+            background: transparent url(images/up.png) no-repeat;            
+            cursor: pointer;
+        }
+
+        #sequence3 .up-disabled {
+            background: none;
+        }
+
+        #sequence3 .down-page, #sequence3 .down-disabled {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            left: 65px;
+            bottom: -16px;
+            background: transparent url(images/down.png) no-repeat;
+            cursor: pointer;     
+        }
+
+        #sequence3 .down-disabled {
+            background: none;
+        }
+        
 	</style>
 </head>
 
 <body>
-    <h3>Smooth Scroll<h3>
+    <h3>Smooth Scroll</h3>
     <div id="sequence">
         <div class="container">
             <a href="#"><img src="images/1.gif"/></a>
@@ -100,7 +168,7 @@
         </div>
     </div>
 
-    <h3>Snap Scroll<h3>
+    <h3>Snap Scroll</h3>
     <div id="sequence2">
         <div class="container">
             <a href="#"><img src="images/1.gif"/></a>
@@ -113,10 +181,30 @@
         </div>
     </div>
 
+    <h3>Vertical Scroll</h3>
+    <div id="sequence3">
+        <div class="container">
+            <a href="#"><img src="images/1.gif"/></a>
+            <a href="#"><img src="images/2.gif"/></a>
+            <a href="#"><img src="images/3.gif"/></a>
+            <a href="#"><img src="images/4.gif"/></a>
+            <a href="#"><img src="images/5.gif"/></a>
+            <a href="#"><img src="images/6.gif"/></a>
+            <a href="#"><img src="images/7.gif"/></a>
+        </div>
+    </div>
+    
     <script type="text/javascript" charset="utf-8">
         function runTest() {
             new Sequence("sequence", "#sequence a");
             new Sequence("sequence2", "#sequence2 a", { smoothScroll: false });
+            new Sequence("sequence3", "#sequence3 a", {
+                orientation: "vertical",
+                nextPageClass: "down-page",
+                previousPageClass: "up-page",
+                nextDisabledClass: "down-disabled",
+                previousDisabledClass: "up-disabled"
+            });
         }
         
         Event.observe(window, "load", runTest);
