@@ -1,6 +1,8 @@
 var Sequence = Class.create({
     // Changed how we normally define default options
     options: {
+        scrollSnap: true,
+        centerFocus: true,
         focusedClass: "focused",
         containerClass: "container",
         orientation: "horizontal",
@@ -16,8 +18,10 @@ var Sequence = Class.create({
         previousPageClass: "previous-page",
         nextDisabledClass: "next-disabled",
         previousDisabledClass: "previous-disabled",
-        pagingType: "per-page",                         // per-page or per-item
-        keyScrollType: "per-item",                      // per-page or per-item
+        pagingType: "per-item",                         // per-page or per-item
+        pagingLoop: true,                               // if per-item and true, then paging loops per item
+        keyScrollType: "per-item-and-focus",            // per-page or per-item
+        keyScrollLoop: true,
         useKeyScroll: true,
         smoothScroll: true,                             // new option: if false, then scrolling just "snaps"
         scrollDuration: 1
@@ -44,7 +48,7 @@ var Sequence = Class.create({
         
         this.direction = "next";
         
-        this.scrollToElement(this.elements.first());
+        this.scrollToElement(this.elements.first(), true, true);
     },
     
     setupKeyScroll: function() {
@@ -105,6 +109,18 @@ var Sequence = Class.create({
             this.elements.last().nextElement = this.elements.first();
         }
         
+        // setup looping for paging buttons
+        if (this.options.pagingLoop) {
+            this.elements.first().previousElementPaging = this.elements.last();
+            this.elements.last().nextElementPaging = this.elements.first();
+        }
+        
+        // setup looping for paging buttons
+        if (this.options.keyScrollLoop) {
+            this.elements.first().previousElementKeyScroll = this.elements.last();
+            this.elements.last().nextElementKeyScroll = this.elements.first();
+        }
+        
         if (this.options.orientation == "horizontal") {
             this.containerSize = this.container.getWidth();
             this.holderSize = this.holder.getWidth();
@@ -135,14 +151,12 @@ var Sequence = Class.create({
         }
     },
     
-    scrollToElement: function(element) {
+    scrollToElement: function(element, centerIt, focusIt) {
         if (element == null) return;
         
-        this.currentElement = element;
-        
-        // hide or show buttons depending on whether there is a next or previous element
-        this.toggleButton('previous', element.previousElement != null);
-        this.toggleButton('next', element.nextElement != null);
+        if (focusIt) {
+            this.focusElement(element);
+        }
         
         this.checkDirection(element);
         
@@ -160,12 +174,34 @@ var Sequence = Class.create({
         if (this.effect != null) this.effect.cancel();
         
         if (this.options.orientation == "horizontal") {
-            this.scrollTo(relativeOffset[0]);
+            var offset = relativeOffset[0];
+            if (centerIt && this.options.centerFocus) {
+                offset -= (this.containerSize - element.size.width) / 2;
+                
+                // if scroll snap on then make sure no clipping occurs
+                if (this.options.scrollSnap) {
+                    var newElement = this.elementCloseTo(offset);
+                    offset = newElement.element.positionedOffset()[0];
+                }
+            }
+            
+            this.scrollTo(offset);
             if (this.options.smoothScroll) {
                 this.effect = new Effect.Move(this.holder, { x: -this.scrollPosition, mode: "absolute", duration: this.options.scrollDuration });   
             }
         } else {
-            this.scrollTo(relativeOffset[1]);
+            var offset = relativeOffset[1];
+            if (centerIt && this.options.centerFocus) {
+                offset -= (this.containerSize - element.size.height) / 2;
+                
+                // if scroll snap on then make sure no clipping occurs
+                if (this.options.scrollSnap) {
+                    var newElement = this.elementCloseTo(offset);
+                    offset = newElement.element.positionedOffset()[1];
+                }
+            }
+            
+            this.scrollTo(offset);
             if (this.options.smoothScroll) {
                 this.effect = new Effect.Move(this.holder, { y: -this.scrollPosition, mode: "absolute", duration: this.options.scrollDuration });   
             }
@@ -183,16 +219,29 @@ var Sequence = Class.create({
                 methodName = "Element";
             }
             
-            this.timer = setTimeout(this[this.direction + methodName].bind(this), this.options.autoScrollDelay * 1000);
+            this.timer = setTimeout(function(methodName) {
+                this[this.direction + methodName]();
+            }.bind(this, methodName), this.options.autoScrollDelay * 1000);
         }
         
-        this.focusElement(element);
+        if (this.options.pagingType == "per-item") {
+            // hide or show buttons depending on whether there is a next or previous element
+            // only use this for per item
+            this.toggleButton('previous', element.previousElementPaging != null);
+            this.toggleButton('next', element.nextElementPaging != null);   
+        } else if (this.options.pagingType == "per-page") {
+            // per page use the actual scroll position
+            this.toggleButton('previous', this.scrollPosition > 0);
+            this.toggleButton('next', this.scrollPosition < this.holderSize - this.containerSize);
+        }
     },
     
     focusElement: function(element) {
+        this.currentElement = element;
+        
         this.elements.each(function(e) {
             e.element.classNames().remove(this.options.focusedClass);
-        }.bind(this));        
+        }.bind(this));
         
         // add a focus class so we can style it
         element.element.classNames().add(this.options.focusedClass);
@@ -271,7 +320,9 @@ var Sequence = Class.create({
                 methodName = "Element";
             }
             
-            button.observe('click', this[buttonName + methodName].bind(this));
+            button.observe('click', function(buttonName, methodName) {
+                this[buttonName + methodName]("Paging");
+            }.bind(this, buttonName, methodName));
             
             // if IE create a separate button for disabled  state
             if (isIE) {
@@ -290,12 +341,50 @@ var Sequence = Class.create({
         }.bind(this));
     },
     
-    previousElement: function() {
-        this.scrollToElement(this.currentElement.previousElement);
+    getKeyScrollElement: function(type) {
+        if (this.options.keyScrollType == "per-item") {
+            var position = this.scrollPosition;
+            
+            // if center required, then center the position
+            if (this.options.centerFocus) {
+                position += this.containerSize / 2;
+            }
+            
+            // maxmimum left scrolling position
+            var maxScroll = this.holderSize - this.containerSize;        
+            
+            // loop if required
+            switch (type) {
+                case "previous":
+                    if (position <= 0) {
+                        return this.elements.first();
+                    }
+                    break;
+                case "next":
+                    if (position >= maxScroll) {
+                        return this.elements.last();
+                    }
+                    break;
+            }
+            
+            return this.elementCloseTo(position);
+        }
+        
+        return null;
     },
     
-    nextElement: function() {
-        this.scrollToElement(this.currentElement.nextElement);
+    previousElement: function(type) {
+        var keyScrollElement = (type == "KeyScroll") ? this.getKeyScrollElement("previous") : null;
+        var element = keyScrollElement || this.currentElement;
+        
+        this.scrollToElement(element["previousElement" + type], true, keyScrollElement == null);
+    },
+    
+    nextElement: function(type) {
+        var keyScrollElement = (type == "KeyScroll") ? this.getKeyScrollElement("next") : null;
+        var element = keyScrollElement || this.currentElement;
+        
+        this.scrollToElement(element["nextElement" + type], true, keyScrollElement == null);
     },
     
     previousPageElement: function() {
@@ -310,7 +399,8 @@ var Sequence = Class.create({
         // make sure were in range of the container
         if (position < 0) {
             position = 0;
-        }        
+        }
+        
         if (position > this.currentHolderSize()) {
             position = this.currentHolderSize();
         }
@@ -353,10 +443,10 @@ var Sequence = Class.create({
         
         switch (event.keyCode) {
             case this.previousKey:
-                this["previous" + methodName]();
+                this["previous" + methodName]("KeyScroll");
                 break;
             case this.nextKey:
-                this["next" + methodName]();
+                this["next" + methodName]("KeyScroll");
                 break;
         }
     },
@@ -388,13 +478,20 @@ Sequence.Element = Class.create({
         
         var widthOrHeight = this.sequence.widthOrHeight();
         
+        var margins;
+        
+        if (this.options.orientation == "horizontal") {
+            margins = parseInt(this.element.getStyle('margin-left')) + parseInt(this.element.getStyle('margin-right'));
+        } else {
+            margins = parseInt(this.element.getStyle('margin-top')) + parseInt(this.element.getStyle('margin-bottom'));
+        }
+        
         // set the new size of the holder so it fits the new element added   
         // margin is included in the height too
         this.sequence.setHolderSize(
             this.sequence.currentHolderSize() +
             this.size[widthOrHeight] +
-            parseInt(this.element.getStyle('margin-left')) +
-            parseInt(this.element.getStyle('margin-right'))
+            margins
         );
         
         this.setupIteration();
@@ -408,7 +505,7 @@ Sequence.Element = Class.create({
             event.stop();
         }
         
-        this.sequence.scrollToElement(this);
+        this.sequence.scrollToElement(this, true, true);
     },
     
     setupFocus: function() {
@@ -422,8 +519,8 @@ Sequence.Element = Class.create({
         // store next and previous elements for easy scrolling
         var last = this.sequence.elements.last();
         if (last) {
-            last.nextElement = this;   
-            this.previousElement = last;
+            last.nextElement = last.nextElementPaging = last.nextElementKeyScroll = this;   
+            this.previousElement = this.previousElementPaging = this.previousElementKeyScroll = last;
         }
     }
 });
