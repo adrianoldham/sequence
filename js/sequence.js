@@ -54,7 +54,7 @@ var Sequence = Class.create({
     setupKeyScroll: function() {
         if (!this.options.useKeyScroll) return;
         
-        document.observe("keydown", this.keyScroll.bindAsEventListener(this));  
+        $(document).observe("keydown", this.keyScroll.bindAsEventListener(this));  
     },
     
     setupContainer: function() {
@@ -449,7 +449,7 @@ var Sequence = Class.create({
                 this["next" + methodName]("KeyScroll");
                 break;
         }
-    },
+    }
 });
 
 Sequence.Element = Class.create({
