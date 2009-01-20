@@ -165,6 +165,10 @@
             <a href="#"><img src="images/5.gif"/></a>
             <a href="#"><img src="images/6.gif"/></a>
             <a href="#"><img src="images/7.gif"/></a>
+            <a href="#"><img src="images/4.gif"/></a>
+            <a href="#"><img src="images/5.gif"/></a>
+            <a href="#"><img src="images/6.gif"/></a>
+            <a href="#"><img src="images/7.gif"/></a>
         </div>
     </div>
 
@@ -196,15 +200,17 @@
     
     <script type="text/javascript" charset="utf-8">
         function runTest() {
-            new Sequence("sequence", "#sequence a");
-            new Sequence("sequence2", "#sequence2 a", { smoothScroll: false });
+            new Sequence("sequence", "#sequence a", {
+				useKeyScroll: true, keyScrollType: "per-item", keyScrollLoop: true, centerFocus: true
+			});
+            /*new Sequence("sequence2", "#sequence2 a", { smoothScroll: false });
             new Sequence("sequence3", "#sequence3 a", {
                 orientation: "vertical",
                 nextPageClass: "down-page",
                 previousPageClass: "up-page",
                 nextDisabledClass: "down-disabled",
                 previousDisabledClass: "up-disabled"
-            });
+            });*/
         }
         
         Event.observe(window, "load", runTest);

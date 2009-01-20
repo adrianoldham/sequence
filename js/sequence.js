@@ -139,14 +139,23 @@ var Sequence = Class.create({
     },
     
     checkDirection: function(element) {
+        if (!this.options.autoScroll) return;
+        
         // check direction and change if neccessary
         if (this.options.autoScrollFinishAction == "reverse") {
-            if (this.direction == "previous" && element.previousElement == null) {
-                this.direction = "next";
-            }
-            
-            if (this.direction == "next" && element.nextElement == null) {
-                this.direction = "previous";
+            if (this.options.autoScrollType == "per-page") {
+                if (this.direction == "previous" && this.scrollPosition <= 0) {
+                    this.direction = "next";
+                } else if (this.direction == "next" && this.scrollPosition >= this.holderSize - this.containerSize) {
+                    this.direction = "previous";
+                }
+            } else if (this.options.autoScrollType == "per-item") {
+                if (this.direction == "previous" && element.previousElement == null) {
+                    this.direction = "next";
+                }
+                else if (this.direction == "next" && element.nextElement == null) {
+                    this.direction = "previous";
+                }
             }
         }
     },
@@ -157,8 +166,6 @@ var Sequence = Class.create({
         if (focusIt) {
             this.focusElement(element);
         }
-        
-        this.checkDirection(element);
         
         // stop any previous autoscrolling
         if (this.timer) {
@@ -186,6 +193,8 @@ var Sequence = Class.create({
             }
             
             this.scrollTo(offset);
+            this.checkDirection(element);
+            
             if (this.options.smoothScroll) {
                 this.effect = new Effect.Move(this.holder, { x: -this.scrollPosition, mode: "absolute", duration: this.options.scrollDuration });   
             }
@@ -202,6 +211,8 @@ var Sequence = Class.create({
             }
             
             this.scrollTo(offset);
+            this.checkDirection(element);
+            
             if (this.options.smoothScroll) {
                 this.effect = new Effect.Move(this.holder, { y: -this.scrollPosition, mode: "absolute", duration: this.options.scrollDuration });   
             }
@@ -210,18 +221,23 @@ var Sequence = Class.create({
         // if autoscroll on, then start timer to scroll to next element
         // only start if there is a next element
         
-        if (this.options.autoScroll && element[this.direction + "Element"] != null) {
+        if (this.options.autoScroll) {
             // depending on auto scroll type, we use a differnet scrolling method
             var methodName;
+            
             if (this.options.autoScrollType == "per-page") {
                 methodName = "PageElement";
             } else if (this.options.autoScrollType == "per-item") {
-                methodName = "Element";
+                if (element[this.direction + "Element"] != null) {
+                    methodName = "Element";
+                }
             }
             
-            this.timer = setTimeout(function(methodName) {
-                this[this.direction + methodName]();
-            }.bind(this, methodName), this.options.autoScrollDelay * 1000);
+            if (methodName) {
+                this.timer = setTimeout(function(methodName) {
+                    this[this.direction + methodName]("AutoScroll");
+                }.bind(this, methodName), this.options.autoScrollDelay * 1000);
+            }
         }
         
         if (this.options.pagingType == "per-item") {
@@ -343,26 +359,29 @@ var Sequence = Class.create({
     
     getKeyScrollElement: function(type) {
         if (this.options.keyScrollType == "per-item") {
+            var halfContainerSize = 0;
             var position = this.scrollPosition;
+            
+            var maxScroll = this.holderSize - this.containerSize;        
             
             // if center required, then center the position
             if (this.options.centerFocus) {
-                position += this.containerSize / 2;
+                halfContainerSize = this.containerSize / 2;                
+                position += halfContainerSize;
             }
             
             // maxmimum left scrolling position
-            var maxScroll = this.holderSize - this.containerSize;        
-            
+            console.log(position)
             // loop if required
             switch (type) {
                 case "previous":
-                    if (position <= 0) {
-                        return this.elements.first();
+                    if (position <= halfContainerSize) {
+                        return this.elements.last();
                     }
                     break;
                 case "next":
-                    if (position >= maxScroll) {
-                        return this.elements.last();
+                    if (position >= maxScroll + halfContainerSize) {
+                        return this.elements.first();
                     }
                     break;
             }
@@ -374,25 +393,48 @@ var Sequence = Class.create({
     },
     
     previousElement: function(type) {
+        console.log('test')
+        
+        if (type == null) type = "";
+        if (type == "AutoScroll") type = "";
+        
         var keyScrollElement = (type == "KeyScroll") ? this.getKeyScrollElement("previous") : null;
         var element = keyScrollElement || this.currentElement;
         
-        this.scrollToElement(element["previousElement" + type], true, keyScrollElement == null);
+        this.scrollToElement(element["previousElement" + type], true, keyScrollElement );
     },
     
     nextElement: function(type) {
+        if (type == null) type = "";
+        if (type == "AutoScroll") type = "";
+        
         var keyScrollElement = (type == "KeyScroll") ? this.getKeyScrollElement("next") : null;
         var element = keyScrollElement || this.currentElement;
         
-        this.scrollToElement(element["nextElement" + type], true, keyScrollElement == null);
+        this.scrollToElement(element["nextElement" + type], true, keyScrollElement );
     },
     
-    previousPageElement: function() {
-        this.scrollToElement(this.elementCloseTo(this.scrollPosition - this.containerSize));
+    previousPageElement: function(type) {
+        var position = this.scrollPosition - this.containerSize;
+        
+        // if key scroll activated and key scroll loop is on, then loop it
+        if (type == "KeyScroll" && this.options.keyScrollLoop) {
+            if (position < 0) position = this.currentHolderSize();
+        }
+        
+        this.scrollToElement(this.elementCloseTo(position));
     },
     
-    nextPageElement: function() {
-        this.scrollToElement(this.elementCloseTo(this.scrollPosition + this.containerSize));
+    nextPageElement: function(type) {
+        var position = this.scrollPosition + this.containerSize;
+        
+        // if key scroll activated and key scroll loop is on, then loop it
+        if (type == "KeyScroll" && this.options.keyScrollLoop ||
+            type == "AutoScroll" && this.options.autoScrollFinishAction == "rewind") {
+            if (position >= this.currentHolderSize()) position = 0;
+        }
+        
+        this.scrollToElement(this.elementCloseTo(position));
     },
     
     elementCloseTo: function(position) {
