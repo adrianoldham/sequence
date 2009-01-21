@@ -253,6 +253,7 @@ var Sequence = Class.create({
     },
     
     focusElement: function(element) {
+        this.currentKeyScrollElement = element;
         this.currentElement = element;
         
         this.elements.each(function(e) {
@@ -358,7 +359,47 @@ var Sequence = Class.create({
     },
     
     getKeyScrollElement: function(type) {
+        var element = this.currentKeyScrollElement[type + "ElementKeyScroll"];
+        
+        var maxScroll = this.holderSize - this.containerSize;
+        var halfContainerSize = this.containerSize / 2;
+
+        if (this.options.centerFocus) {
+            if (this.scrollPosition == 0) {
+                if (this.options.keyScrollLoop && type == "previous") {
+                    element = this.elementCloseTo(this.holderSize - halfContainerSize); 
+                } else {
+                    element = this.elementCloseTo(this.scrollPosition + halfContainerSize);
+                    element = element[type + "ElementKeyScroll"]; 
+                }
+            }
+        }
+
+        if (this.scrollPosition >= maxScroll) {
+            if (this.options.keyScrollLoop && type == "next") {
+                if (this.options.centerFocus) {
+                    element = this.elementCloseTo(halfContainerSize); 
+                } else {
+                    element = this.elements.first();
+                }
+            } else {
+                if (this.options.centerFocus) {
+                    element = this.elementCloseTo(this.scrollPosition + halfContainerSize);
+                } else {
+                    element = this.elementCloseTo(this.scrollPosition);   
+                }
+                
+                element = element[type + "ElementKeyScroll"]; 
+            }
+        }
+        
+        if (element) this.currentKeyScrollElement = element;
+        return this.currentKeyScrollElement;
+        
+        /*
+        
         if (this.options.keyScrollType == "per-item") {
+            
             var halfContainerSize = 0;
             var position = this.scrollPosition;
             
@@ -389,29 +430,32 @@ var Sequence = Class.create({
             return this.elementCloseTo(position);
         }
         
-        return null;
+        return null;*/
+    },
+    
+    nextOrPreviewElement: function(direction, type) {
+        var element = this.currentElement;    
+        var focusIt = true;
+        
+        type = type || "";
+        if (type == "AutoScroll") type = "";
+        
+        if (type == 'KeyScroll' && this.options.keyScrollType == "per-item") {
+            focusIt = false;
+            element = this.getKeyScrollElement(direction);
+        } else {
+            element = element[direction + "Element" + type];
+        }
+        
+        this.scrollToElement(element, true, focusIt);
     },
     
     previousElement: function(type) {
-        console.log('test')
-        
-        if (type == null) type = "";
-        if (type == "AutoScroll") type = "";
-        
-        var keyScrollElement = (type == "KeyScroll") ? this.getKeyScrollElement("previous") : null;
-        var element = keyScrollElement || this.currentElement;
-        
-        this.scrollToElement(element["previousElement" + type], true, keyScrollElement );
+        this.nextOrPreviewElement('previous', type);
     },
     
     nextElement: function(type) {
-        if (type == null) type = "";
-        if (type == "AutoScroll") type = "";
-        
-        var keyScrollElement = (type == "KeyScroll") ? this.getKeyScrollElement("next") : null;
-        var element = keyScrollElement || this.currentElement;
-        
-        this.scrollToElement(element["nextElement" + type], true, keyScrollElement );
+        this.nextOrPreviewElement('next', type);
     },
     
     previousPageElement: function(type) {
@@ -452,7 +496,7 @@ var Sequence = Class.create({
         var closestDistance = null;
         
         // search and find the closest element to the given point
-        for (var i = 0; i < this.elements.length; i++) {
+        for (var i = this.elements.length - 1; i >= 0; i--) {
             var element = this.elements[i];
             var offset = element.element.positionedOffset();
             
