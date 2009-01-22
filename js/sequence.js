@@ -1,3 +1,12 @@
+/*
+ Things to note:
+ 
+  * centerFocus and even number of items per page are not supported.
+  * Per-item button scrolling always focuses the element (so if this is used, need to apply a focus class style to the elements).
+*/
+
+
+
 var Sequence = Class.create({
     // Changed how we normally define default options
     options: {
@@ -240,15 +249,17 @@ var Sequence = Class.create({
             }
         }
         
-        if (this.options.pagingType == "per-item") {
-            // hide or show buttons depending on whether there is a next or previous element
-            // only use this for per item
-            this.toggleButton('previous', element.previousElementPaging != null);
-            this.toggleButton('next', element.nextElementPaging != null);   
-        } else if (this.options.pagingType == "per-page") {
-            // per page use the actual scroll position
-            this.toggleButton('previous', this.scrollPosition > 0);
-            this.toggleButton('next', this.scrollPosition < this.holderSize - this.containerSize);
+        if (!this.options.pagingLoop) {
+            if (this.options.pagingType == "per-item") {
+                // hide or show buttons depending on whether there is a next or previous element
+                // only use this for per item
+                this.toggleButton('previous', element.previousElementPaging != null);
+                this.toggleButton('next', element.nextElementPaging != null);   
+            } else if (this.options.pagingType == "per-page") {
+                // per page use the actual scroll position
+                this.toggleButton('previous', this.scrollPosition > 0);
+                this.toggleButton('next', this.scrollPosition < this.holderSize - this.containerSize);
+            }
         }
     },
     
@@ -459,12 +470,15 @@ var Sequence = Class.create({
     },
     
     previousPageElement: function(type) {
-        var position = this.scrollPosition - this.containerSize;
+        var position = this.scrollPosition;
         
         // if key scroll activated and key scroll loop is on, then loop it
-        if (type == "KeyScroll" && this.options.keyScrollLoop) {
-            if (position < 0) position = this.currentHolderSize();
+        if (type == "Paging" && this.options.pagingLoop ||
+            type == "KeyScroll" && this.options.keyScrollLoop) {
+            if (position == 0) position = this.currentHolderSize();
         }
+        
+        position -= this.containerSize;
         
         this.scrollToElement(this.elementCloseTo(position));
     },
@@ -473,9 +487,10 @@ var Sequence = Class.create({
         var position = this.scrollPosition + this.containerSize;
         
         // if key scroll activated and key scroll loop is on, then loop it
-        if (type == "KeyScroll" && this.options.keyScrollLoop ||
+        if (type == "Paging" && this.options.pagingLoop ||
+            type == "KeyScroll" && this.options.keyScrollLoop ||
             type == "AutoScroll" && this.options.autoScrollFinishAction == "rewind") {
-            if (position >= this.currentHolderSize()) position = 0;
+            if (position >= this.currentHolderSize()) position %= this.currentHolderSize();
         }
         
         this.scrollToElement(this.elementCloseTo(position));

@@ -199,9 +199,15 @@
     <script type="text/javascript" charset="utf-8">
         function runTest() {
             new Sequence("sequence", "#sequence a", {
-				autoScrollDelay: 2,
-				autoScroll: false, autoScrollType: "per-page", autoScrollFinishAction: "reverse",
-				centerFocus: true, pagingType: "per-page"
+	            focusOnClick: false,
+	            pagingType: "per-page",
+	            keyScrollType: "per-page",
+	            keyScrollLoop: true,
+	            autoScroll: false,
+	            autoScrollType: "per-page",
+	            autoScrollFinishAction: "rewind",
+	            scrollDuration: .5,
+	            centerFocus: false
 			});
 			
             new Sequence("sequence2", "#sequence2 a", { 
