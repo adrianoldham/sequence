@@ -278,11 +278,11 @@ var Sequence = Class.create({
     toggleButton: function(buttonName, show) {
         var button = this[buttonName + "PageButton"];
         var disabledButton = this[buttonName + "DisableButton"];
-        
+  
         if (button) {
             if (disabledButton) {
-                button[show ? 'show' : 'hide'];
-                disabledButton[show ? 'hide' : 'show'];
+                button[show ? 'show' : 'hide']();
+                disabledButton[show ? 'hide' : 'show']();
             } else {
                 button.classNames()[show ? 'remove' : 'add' ](this.options[buttonName + "DisabledClass"]);
             }
@@ -356,11 +356,11 @@ var Sequence = Class.create({
             if (isIE) {
                 var disablePageClass = this.options[buttonName + "DisabledClass"];
                 var disableButton = new Element("div", { 'class': disablePageClass });
-                
+
+                button.insert({ after: disableButton });
+
                 disableButton.iePNGFix();
                 disableButton.hide();
-                
-                button.insert({ after: disableButton });
                 
                 this[buttonName + "DisableButton"] = disableButton;
             }

@@ -65,7 +65,7 @@
         }
 
         .previous-disabled {
-            background: none;
+            background: transparent url(images/right.png) no-repeat;
         }
 
         .next-page, .next-disabled {
@@ -79,7 +79,7 @@
         }
 
         .next-disabled {
-            background: none;
+            background: transparent url(images/left.png) no-repeat;  
         }
 
         #sequence3 {
@@ -200,9 +200,10 @@
         function runTest() {
             new Sequence("sequence", "#sequence a", {
 	            focusOnClick: false,
+				pagingLoop: false,
 	            pagingType: "per-page",
 	            keyScrollType: "per-page",
-	            keyScrollLoop: true,
+	            keyScrollLoop: false,
 	            autoScroll: false,
 	            autoScrollType: "per-page",
 	            autoScrollFinishAction: "rewind",
