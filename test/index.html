@@ -150,7 +150,45 @@
         #sequence3 .down-disabled {
             background: none;
         }
-        
+
+        #sequence4 {
+	        font: normal 1em/1.5em Helvetica, Arial, Verdana, sans-serif;
+            width: 400px;
+            height: 1.5em;
+	        position: relative;
+	        border: 1px solid #ccc;
+	        margin:  50px auto 10px auto;
+	        overflow: hidden;
+	        text-align: left;
+	    }
+
+        #sequence4 ul, #sequence4 li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            float: left;
+            width: 100%;
+        }
+
+        #sequence4 li {
+            height: 2em;
+	    }
+	    
+	    #sequence4 a {
+	        color: #666;
+	        display: block;
+	        text-decoration: none;
+	    }
+	    
+	    #sequence4 a:hover {
+	        color: #333;
+	        text-decoration: underline;
+	    }
+
+	    #sequence4 a:hover:after {
+	        content: " >";
+	    }
+
 	</style>
 </head>
 
@@ -195,6 +233,21 @@
             <a href="#"><img src="images/7.gif"/></a>
         </div>
     </div>
+
+    <div id="sequence4">    
+        <ul class="container">
+            <li><a href="#">News item one</a></li>
+            <li><a href="#">News item two</a></li>
+            <li><a href="#">News item three</a></li>
+            <li><a href="#">News item four</a></li>
+            <li><a href="#">News item five</a></li>
+            <li><a href="#">News item six</a></li>
+            <li><a href="#">News item seven</a></li>
+            <li><a href="#">News item eight</a></li>
+            <li><a href="#">News item nine</a></li>
+            <li><a href="#">News item ten</a></li>
+        </ul>
+    </div>
     
     <script type="text/javascript" charset="utf-8">
         function runTest() {
@@ -212,7 +265,10 @@
 			});
 			
             new Sequence("sequence2", "#sequence2 a", { 
-				useKeyScroll: true, keyScrollType: "per-item-and-focus", keyScrollLoop: false, centerFocus: true,
+				useKeyScroll: true,
+				keyScrollType: "per-item-and-focus",
+				keyScrollLoop: false,
+				centerFocus: true,
 				smoothScroll: false 
 			});
 			
@@ -223,6 +279,13 @@
                 nextDisabledClass: "down-disabled",
                 previousDisabledClass: "up-disabled"
             });
+
+            new Sequence("sequence4", "#sequence4 li", {
+                orientation: "vertical",
+                autoScrollDelay: 2,
+	            scrollDuration: .5,
+	            autoScrollFinishAction: "rewind"
+			});
         }
         
         Event.observe(window, "load", runTest);
