@@ -69,7 +69,7 @@ var Sequence = Class.create({
     setupContainer: function() {
         this.container.setStyle({ position: "relative", overflow: "hidden" });
         this.holder = new Element("div");
-        this.holder.setStyle({ position: "absolute", overflow: "hidden" });
+        this.holder.setStyle({ position: "absolute" });
         this.container.appendChild(this.holder);
         
         // depending on orientation set starting size
@@ -571,7 +571,11 @@ Sequence.Element = Class.create({
         if (this.options.orientation == "horizontal") {
             this.element.setStyle({ 'float': 'left' });   
         } else {
-            this.element.setStyle({ 'display': 'block' });               
+            this.element.setStyle({ 
+                'display': 'block',
+                'position': 'absolute',
+                'top': this.sequence.holder.getHeight() + "px"
+            }); 
         }
         
         // store the size of the element
