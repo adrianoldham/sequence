@@ -3,7 +3,18 @@
  
   * centerFocus and even number of items per page are not supported.
   * Per-item button scrolling always focuses the element (so if this is used, need to apply a focus class style to the elements).
+  
+ LazyLoader Addition
+ -------------------
+  
+  * Don't forget to include lazyloader.js!
+  * If used with lazy loader, Sequence needs to be created on dom:loaded
+  * lazyLoadType can be 'page' or 'item'
+  * lazyLoadThreshold is the number of pages or items to look ahead (based on the lazyLoadType)
+  * eg. lazyLoadType = 'page' and lazyLoadThreshold = 2, then it'll preload 2 pages ahead
+  * eg. lazyLoadType = 'item' and lazyLoadThreshold = 3, then it'll preload 3 items ahead
 */
+
 
 
 
@@ -33,7 +44,13 @@ var Sequence = Class.create({
         keyScrollLoop: true,
         useKeyScroll: true,
         smoothScroll: true,                             // new option: if false, then scrolling just "snaps"
-        scrollDuration: 1
+        scrollDuration: 1,
+        
+        // Lazy Loader options
+        
+        lazyLoader: null,
+        lazyLoadType: "item",                           // page or item
+        lazyLoadThreshold: 1                            // the amount of look ahead based on the above type 
     },
     
     initialize: function(wrapper, selector, options) {
@@ -50,6 +67,10 @@ var Sequence = Class.create({
         // find the container
         this.container = this.wrapper.getElementsBySelector("." + this.options.containerClass).first();
         
+        // setup the lazy load, only works if sequence is created on dom:loaded
+        // use lazy loader to load images only if specified in the options
+        this.setupLazyLoader();
+        
         this.setupContainer();
         this.setupElements(elements);
         this.setupPageButtons();
@@ -58,6 +79,41 @@ var Sequence = Class.create({
         this.direction = "next";
         
         this.scrollToElement(this.elements.first(), true, true);
+        
+        // show any images that are visible on load
+        this.setLazyLoaderThreshold();
+        
+        this.updateLazyLoader();
+    },
+    
+    setLazyLoaderThreshold: function() {
+        if (!this.options.lazyLoader) return;
+        
+        var threshold;
+        
+        // find the threshold in pixels based on lazy load type
+        switch (this.options.lazyLoadType) {
+            case "page":
+                threshold = this.options.lazyLoadThreshold * this.container.getWidth();
+                break;
+            case "item":
+                threshold = this.options.lazyLoadThreshold * this.maxSize;
+                break;
+        }
+        
+        this.lazyLoader.setThreshold(threshold);
+    },
+    
+    updateLazyLoader: function() {
+        if (this.options.lazyLoader) {
+            this.lazyLoader.update();
+        }
+    },
+    
+    setupLazyLoader: function() {
+        if (this.options.lazyLoader) {
+            this.lazyLoader = this.options.lazyLoader;
+        }
     },
     
     setupKeyScroll: function() {
@@ -205,7 +261,12 @@ var Sequence = Class.create({
             this.checkDirection(element);
             
             if (this.options.smoothScroll) {
-                this.effect = new Effect.Move(this.holder, { x: -this.scrollPosition, mode: "absolute", duration: this.options.scrollDuration });   
+                this.effect = new Effect.Move(this.holder, { 
+                    x: -this.scrollPosition,
+                    mode: "absolute", 
+                    duration: this.options.scrollDuration,
+                    afterFinish: this.updateLazyLoader.bind(this)
+                });   
             }
         } else {
             var offset = relativeOffset[1];
@@ -550,6 +611,13 @@ var Sequence = Class.create({
                 this["next" + methodName]("KeyScroll");
                 break;
         }
+    },
+    
+    /* Used to find the buggest element in the sequence */
+    setMaxSizeIfGreater: function(newSize) {
+        if (this.maxSize == null || this.maxSize < newSize) {
+            this.maxSize = newSize;
+        }
     }
 });
 
@@ -582,6 +650,9 @@ Sequence.Element = Class.create({
         this.size = { width: this.element.getWidth(), height: this.element.getHeight() };
         
         var widthOrHeight = this.sequence.widthOrHeight();
+        
+        // find the biggest element
+        this.sequence.setMaxSizeIfGreater(this.size[widthOrHeight]);
         
         var margins;
         

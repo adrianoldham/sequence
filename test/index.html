@@ -8,6 +8,7 @@
     <script type="text/javascript" charset="utf-8" src="../lib/scriptaculous.js?load=effects"></script>
     <script type="text/javascript" charset="utf-8" src="../js/helper.js"></script>
     <script type="text/javascript" charset="utf-8" src="../js/sequence.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/lazyloader.js"></script>
     
 	<title>index</title>
 	
@@ -35,12 +36,22 @@
             height: 50px;
         }
 
+		.container a {
+			width: 118px;
+			height: 50px;
+            border: 1px dashed #999;
+		}
+
         .container a img {
             background-color: #fff;
             border-style: none;
             border: 1px dashed #999;
             padding: 2px;
         }
+
+		.container a img {
+			border-style: none;
+		}
 
         .container a.first {
             margin-left: 0 !important;
@@ -51,7 +62,7 @@
         }
 
         .container a.focused {
-            border-bottom: 2px solid #999;
+            border-bottom: 2px solid #999 !important;
         }
 
         .previous-page, .previous-disabled {
@@ -81,216 +92,46 @@
         .next-disabled {
             background: transparent url(images/left.png) no-repeat;  
         }
-
-        #sequence3 {
-	        width: 140px;
-            height: 156px;
-            position: relative;
-	        border: 1px solid #999;
-	        padding: 20px 10px;
-	        margin:  auto;
-        }
-
-        #sequence3 .container {
-            width: 140px;
-            height: 156px;
-        }
-
-        #sequence3 .container a {
-            margin: 5px 10px;
-            display: block;
-			height: auto;
-            background-color: #ccc;
-            border-bottom: 2px solid #fff;
-        }
-
-        #sequence .container a img {
-            background-color: #fff;
-            border-style: none;
-            border: 1px dashed #999;
-            padding: 2px;
-        }
-
-        #sequence3 .container a.first {
-            margin: 0 10px 5px 10px !important;
-        }
-
-        #sequence3 .container a.last {
-            margin: 5px 10px 0 10px !important;
-        }
-
-        #sequence3 .container a.focused {
-            border-color: #000;
-        }
-
-        #sequence3 .up-page, #sequence3 .up-disabled {
-            width: 30px;
-            height: 30px;
-            position: absolute;
-            left: 65px;
-            top: -16px;
-            background: transparent url(images/up.png) no-repeat;            
-            cursor: pointer;
-        }
-
-        #sequence3 .up-disabled {
-            background: none;
-        }
-
-        #sequence3 .down-page, #sequence3 .down-disabled {
-            width: 30px;
-            height: 30px;
-            position: absolute;
-            left: 65px;
-            bottom: -16px;
-            background: transparent url(images/down.png) no-repeat;
-            cursor: pointer;     
-        }
-
-        #sequence3 .down-disabled {
-            background: none;
-        }
-
-        #sequence4 {
-	        font: normal 1em/1.5em Helvetica, Arial, Verdana, sans-serif;
-            width: 400px;
-            height: 1.5em;
-	        position: relative;
-	        border: 1px solid #ccc;
-	        margin:  50px auto 10px auto;
-	        overflow: hidden;
-	        text-align: left;
-	    }
-
-		#sequence4 ul {
-			height: 1.5em;
-		}
-		
-        #sequence4 ul, #sequence4 li {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            float: left;
-            width: 100%;
-        }
-
-        #sequence4 li {
-            height: 2em;
-			width: 400px;
-	    }
-	    
-	    #sequence4 a {
-	        color: #666;
-	        display: block;
-	        text-decoration: none;
-	    }
-	    
-	    #sequence4 a:hover {
-	        color: #333;
-	        text-decoration: underline;
-	    }
-
-	    #sequence4 a:hover:after {
-	        content: " >";
-	    }
-
 	</style>
 </head>
 
 <body>
-    <h3>Smooth Scroll</h3>
+    <h3>Manual Lazy Loader</h3>
+	
     <div id="sequence">
         <div class="container">
             <a href="#"><img src="images/1.gif"/></a>
             <a href="#"><img src="images/2.gif"/></a>
             <a href="#"><img src="images/3.gif"/></a>
-            <a href="#"><img src="images/1.gif"/></a>
-            <a href="#"><img src="images/2.gif"/></a>
-            <a href="#"><img src="images/3.gif"/></a>
-            <a href="#"><img src="images/1.gif"/></a>
-            <a href="#"><img src="images/2.gif"/></a>
-            <a href="#"><img src="images/3.gif"/></a>
+            <a href="#"><img src="images/4.gif"/></a>
+            <a href="#"><img src="images/5.gif"/></a>
+            <a href="#"><img src="images/6.gif"/></a>
+            <a href="#"><img src="images/7.gif"/></a>
         </div>
     </div>
 
-    <h3>Snap Scroll</h3>
+    <h3>Automatic Lazy Loader</h3>
+	
     <div id="sequence2">
         <div class="container">
-            <a href="#"><img src="images/1.gif"/></a>
-            <a href="#"><img src="images/2.gif"/></a>
-            <a href="#"><img src="images/3.gif"/></a>
-            <a href="#"><img src="images/4.gif"/></a>
-            <a href="#"><img src="images/5.gif"/></a>
-            <a href="#"><img src="images/6.gif"/></a>
-            <a href="#"><img src="images/7.gif"/></a>
+            <a href="#"><img src="images/8.png"/></a>
+            <a href="#"><img src="images/9.png"/></a>
+            <a href="#"><img src="images/10.png"/></a>
+            <a href="#"><img src="images/11.png"/></a>
+            <a href="#"><img src="images/12.png"/></a>
+            <a href="#"><img src="images/13.png"/></a>
         </div>
     </div>
 
-    <h3>Vertical Scroll</h3>
-    <div id="sequence3">
-        <div class="container">
-            <a href="#"><img src="images/1.gif"/></a>
-            <a href="#"><img src="images/2.gif"/></a>
-            <a href="#"><img src="images/3.gif"/></a>
-            <a href="#"><img src="images/4.gif"/></a>
-            <a href="#"><img src="images/5.gif"/></a>
-            <a href="#"><img src="images/6.gif"/></a>
-            <a href="#"><img src="images/7.gif"/></a>
-        </div>
-    </div>
-
-    <div id="sequence4">    
-        <ul class="container">
-            <li><a href="#">News item one</a></li>
-            <li><a href="#">News item two</a></li>
-            <li><a href="#">News item three</a></li>
-            <li><a href="#">News item four</a></li>
-            <li><a href="#">News item five</a></li>
-            <li><a href="#">News item six</a></li>
-            <li><a href="#">News item seven</a></li>
-            <li><a href="#">News item eight</a></li>
-            <li><a href="#">News item nine</a></li>
-            <li><a href="#">News item ten</a></li>
-        </ul>
-    </div>
-    
     <script type="text/javascript" charset="utf-8">
+		// create lazyloaders with dom:loaded or at the bottom of a html page
+		var lazy = new LazyLoader("sequence", { placeHolderImage: "images/blank.gif" });
+		var lazy2 = new LazyLoader("sequence2", { placeHolderImage: "images/blank.gif" });		
+	
         function runTest() {
-            new Sequence("sequence", "#sequence a", {
-	            focusOnClick: false,
-				pagingLoop: false,
-	            pagingType: "per-page",
-	            keyScrollType: "per-page",
-	            keyScrollLoop: false,
-	            autoScroll: false,
-	            autoScrollType: "per-page",
-	            autoScrollFinishAction: "rewind",
-	            scrollDuration: .5,
-	            centerFocus: false
-			});
-			
-            new Sequence("sequence2", "#sequence2 a", { 
-				useKeyScroll: true,
-				keyScrollType: "per-item-and-focus",
-				keyScrollLoop: false,
-				centerFocus: true,
-				smoothScroll: false 
-			});
-			
-            new Sequence("sequence3", "#sequence3 a", {
-                orientation: "vertical",
-                nextPageClass: "down-page",
-                previousPageClass: "up-page",
-                nextDisabledClass: "down-disabled",
-                previousDisabledClass: "up-disabled"
-            });
-
-            new Sequence("sequence4", "#sequence4 li", {
-                orientation: "vertical",
-                autoScrollDelay: 2,
-	            scrollDuration: .5,
-	            autoScrollFinishAction: "rewind"
-			});
+			// pass lazy loader into sequence and it sets it up automatically
+            new Sequence("sequence2", "#sequence2 a", { autoScroll: false, lazyLoader: lazy2, lazyLoadThreshold: 2 }); // look ahead two items
+            new Sequence("sequence", "#sequence a", { autoScroll: false, lazyLoader: lazy }); // default is look ahead one item
         }
         
         Event.observe(window, "load", runTest);
