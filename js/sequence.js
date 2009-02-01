@@ -78,34 +78,35 @@ var Sequence = Class.create({
         
         this.direction = "next";
         
-        this.scrollToElement(this.elements.first(), true, true);
-        
         // show any images that are visible on load
         this.setLazyLoaderThreshold();
+        
+        this.scrollToElement(this.elements.first(), true, true);
+        
         
         this.updateLazyLoader();
     },
     
     setLazyLoaderThreshold: function() {
-        if (!this.options.lazyLoader) return;
+        if (this.lazyLoader && this.lazyLoader.container != null) {        
+            var threshold;
         
-        var threshold;
+            // find the threshold in pixels based on lazy load type
+            switch (this.options.lazyLoadType) {
+                case "page":
+                    threshold = this.options.lazyLoadThreshold * this.container.getWidth();
+                    break;
+                case "item":
+                    threshold = this.options.lazyLoadThreshold * this.maxSize;
+                    break;
+            }
         
-        // find the threshold in pixels based on lazy load type
-        switch (this.options.lazyLoadType) {
-            case "page":
-                threshold = this.options.lazyLoadThreshold * this.container.getWidth();
-                break;
-            case "item":
-                threshold = this.options.lazyLoadThreshold * this.maxSize;
-                break;
+            this.lazyLoader.setThreshold(threshold);
         }
-        
-        this.lazyLoader.setThreshold(threshold);
     },
     
     updateLazyLoader: function() {
-        if (this.options.lazyLoader) {
+        if (this.lazyLoader && this.lazyLoader.container != null) {
             this.lazyLoader.update();
         }
     },
