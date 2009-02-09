@@ -88,7 +88,7 @@ var Sequence = Class.create({
     },
     
     setupMousePause: function() {
-        if (this.options.useMouseStop) {
+        if (this.options.useMouseStop && this.options.autoScroll) {
             this.container.observe("mouseover", this.mouseEnter.bind(this)(this.containerEnter.bindAsEventListener(this)));
             this.container.observe("mouseout", this.mouseEnter.bind(this)(this.containerLeave.bindAsEventListener(this)));  
         }
