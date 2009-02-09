@@ -658,9 +658,9 @@ Sequence.Element = Class.create({
         var margins;
         
         if (this.options.orientation == "horizontal") {
-            margins = parseInt(this.element.getStyle('margin-left')) + parseInt(this.element.getStyle('margin-right'));
+            margins = parseInt(this.element.getStyle('margin-left') || 0) + parseInt(this.element.getStyle('margin-right') || 0);
         } else {
-            margins = parseInt(this.element.getStyle('margin-top')) + parseInt(this.element.getStyle('margin-bottom'));
+            margins = parseInt(this.element.getStyle('margin-top') || 0) + parseInt(this.element.getStyle('margin-bottom') || 0);
         }
         
         // set the new size of the holder so it fits the new element added   
