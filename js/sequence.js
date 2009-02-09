@@ -45,7 +45,10 @@ var Sequence = Class.create({
         useKeyScroll: true,
         smoothScroll: true,                             // new option: if false, then scrolling just "snaps"
         scrollDuration: 1,
-        useMouseStop: false,
+        useMouseStop: true,
+        pausedClass: 'paused',
+        pausedText: 'Paused',
+        showPauseIndicator: true,
         // Lazy Loader options
         
         lazyLoader: null,
@@ -91,18 +94,35 @@ var Sequence = Class.create({
         if (this.options.useMouseStop && this.options.autoScroll) {
             this.container.observe("mouseover", this.mouseEnter.bind(this)(this.containerEnter.bindAsEventListener(this)));
             this.container.observe("mouseout", this.mouseEnter.bind(this)(this.containerLeave.bindAsEventListener(this)));  
+            
+            // add pause notifier only if mouse stop is on        
+            if (this.options.showPauseIndicator) {
+                this.pauseDiv = new Element("div", { 'class': this.options.pausedClass }).update(this.options.pausedText);
+                this.container.appendChild(this.pauseDiv);
+                this.pauseDiv.hide();
+            }
         }
     },
     
-    containerEnter: function() {
+    pause: function() {
         this.paused = true;
+        this.pauseDiv.show();     
     },
     
-    containerLeave: function() {
+    unpause: function() {
         this.paused = false;
         
         clearTimeout(this.timer);
         this.startAutoScroll(this.currentElement);
+        this.pauseDiv.hide();
+    },
+    
+    containerEnter: function() {
+        this.pause();
+    },
+    
+    containerLeave: function() {
+        this.unpause();
     },
     
     mouseEnter: function(handler) {
