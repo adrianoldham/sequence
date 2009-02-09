@@ -45,7 +45,7 @@ var Sequence = Class.create({
         useKeyScroll: true,
         smoothScroll: true,                             // new option: if false, then scrolling just "snaps"
         scrollDuration: 1,
-        
+        useMouseStop: false,
         // Lazy Loader options
         
         lazyLoader: null,
@@ -75,6 +75,7 @@ var Sequence = Class.create({
         this.setupElements(elements);
         this.setupPageButtons();
         this.setupKeyScroll();
+        this.setupMousePause();
         
         this.direction = "next";
         
@@ -83,8 +84,36 @@ var Sequence = Class.create({
         
         this.scrollToElement(this.elements.first(), true, true);
         
-        
         this.updateLazyLoader();
+    },
+    
+    setupMousePause: function() {
+        if (this.options.useMouseStop) {
+            this.container.observe("mouseover", this.mouseEnter.bind(this)(this.containerEnter.bindAsEventListener(this)));
+            this.container.observe("mouseout", this.mouseEnter.bind(this)(this.containerLeave.bindAsEventListener(this)));  
+        }
+    },
+    
+    containerEnter: function() {
+        this.paused = true;
+    },
+    
+    containerLeave: function() {
+        this.paused = false;
+        
+        clearTimeout(this.timer);
+        this.startAutoScroll(this.currentElement);
+    },
+    
+    mouseEnter: function(handler) {
+        return function(event) {
+            var relatedTarget = event.relatedTarget;
+            if (relatedTarget == null) return;
+            if (!relatedTarget.descendantOf) return;
+
+            if (this === relatedTarget || relatedTarget.descendantOf(this)) return;
+            handler.call(this, event);
+        }
     },
     
     setLazyLoaderThreshold: function() {
@@ -228,6 +257,7 @@ var Sequence = Class.create({
     
     scrollToElement: function(element, centerIt, focusIt) {
         if (element == null) return;
+        if (this.paused) return;
         
         if (focusIt) {
             this.focusElement(element);
@@ -292,7 +322,24 @@ var Sequence = Class.create({
         // if autoscroll on, then start timer to scroll to next element
         // only start if there is a next element
         
-        if (this.options.autoScroll) {
+        this.startAutoScroll(element);
+        
+        if (!this.options.pagingLoop) {
+            if (this.options.pagingType == "per-item") {
+                // hide or show buttons depending on whether there is a next or previous element
+                // only use this for per item
+                this.toggleButton('previous', element.previousElementPaging != null);
+                this.toggleButton('next', element.nextElementPaging != null);   
+            } else if (this.options.pagingType == "per-page") {
+                // per page use the actual scroll position
+                this.toggleButton('previous', this.scrollPosition > 0);
+                this.toggleButton('next', this.scrollPosition < this.holderSize - this.containerSize);
+            }
+        }
+    },
+    
+    startAutoScroll: function(element) {
+        if (this.options.autoScroll) { 
             // depending on auto scroll type, we use a differnet scrolling method
             var methodName;
             
@@ -309,20 +356,7 @@ var Sequence = Class.create({
                     this[this.direction + methodName]("AutoScroll");
                 }.bind(this, methodName), this.options.autoScrollDelay * 1000);
             }
-        }
-        
-        if (!this.options.pagingLoop) {
-            if (this.options.pagingType == "per-item") {
-                // hide or show buttons depending on whether there is a next or previous element
-                // only use this for per item
-                this.toggleButton('previous', element.previousElementPaging != null);
-                this.toggleButton('next', element.nextElementPaging != null);   
-            } else if (this.options.pagingType == "per-page") {
-                // per page use the actual scroll position
-                this.toggleButton('previous', this.scrollPosition > 0);
-                this.toggleButton('next', this.scrollPosition < this.holderSize - this.containerSize);
-            }
-        }
+        }  
     },
     
     focusElement: function(element) {

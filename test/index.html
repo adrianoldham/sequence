@@ -130,8 +130,8 @@
 	
         function runTest() {
 			// pass lazy loader into sequence and it sets it up automatically
-            new Sequence("sequence2", "#sequence2 a", { autoScroll: false, lazyLoader: lazy2, lazyLoadThreshold: 2 }); // look ahead two items
-            new Sequence("sequence", "#sequence a", { autoScroll: false, lazyLoader: lazy }); // default is look ahead one item
+            new Sequence("sequence2", "#sequence2 a", { autoScroll: true, lazyLoader: lazy2, lazyLoadThreshold: 2 }); // look ahead two items
+            new Sequence("sequence", "#sequence a", { autoScroll: true, lazyLoader: lazy }); // default is look ahead one item
         }
         
         Event.observe(window, "load", runTest);
