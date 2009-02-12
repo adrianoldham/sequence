@@ -40,12 +40,12 @@ var Sequence = Class.create({
         previousDisabledClass: "previous-disabled",
         pagingType: "per-item",                         // per-page or per-item
         pagingLoop: true,                               // if per-item and true, then paging loops per item
-        keyScrollType: "per-item-and-focus",            // per-page or per-item
+        keyScrollType: "per-item-and-focus",            // per-page, per-item or per-item-and-focus
         keyScrollLoop: true,
         useKeyScroll: true,
         smoothScroll: true,                             // new option: if false, then scrolling just "snaps"
         scrollDuration: 1,
-        useMouseStop: true,
+        useMouseStop: false,
         pausedClass: 'paused',
         pausedText: 'Paused',
         showPauseIndicator: true,
