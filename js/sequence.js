@@ -67,6 +67,8 @@ var Sequence = Class.create({
         var elements = $$(selector);
         if (elements.length == 0) return;
         
+        this.focusEvents = [];
+        
         // find the container
         this.container = this.wrapper.getElementsBySelector("." + this.options.containerClass).first();
         
@@ -88,6 +90,10 @@ var Sequence = Class.create({
         this.scrollToElement(this.elements.first(), true, true);
         
         this.updateLazyLoader();
+    },
+        
+    addFocusEvent: function(func) {    
+        this.focusEvents.push(func);
     },
     
     setupMousePause: function() {
@@ -380,6 +386,11 @@ var Sequence = Class.create({
     },
     
     focusElement: function(element) {
+        // Call any focus callbacks
+        this.focusEvents.each(function(func) {
+            func(element);
+        }.bind(this));
+        
         this.currentKeyScrollElement = element;
         this.currentElement = element;
         

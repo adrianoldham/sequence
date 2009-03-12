@@ -138,7 +138,9 @@
         function runTest() {
 			// pass lazy loader into sequence and it sets it up automatically
             new Sequence("sequence2", "#sequence2 a", { autoScroll: true, lazyLoader: lazy2, lazyLoadThreshold: 2 }); // look ahead two items
-            new Sequence("sequence", "#sequence a", { autoScroll: true, lazyLoader: lazy }); // default is look ahead one item
+            var sequence = new Sequence("sequence", "#sequence a", { autoScroll: true, lazyLoader: lazy }); // default is look ahead one item
+
+			sequence.addFocusEvent(function() { console.log('Focus has been called'); })
         }
         
         Event.observe(window, "load", runTest);
