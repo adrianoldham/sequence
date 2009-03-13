@@ -93,7 +93,9 @@ var Sequence = Class.create({
     },
         
     addFocusEvent: function(func) {    
-        this.focusEvents.push(func);
+        if (this.focusEvents) {
+            this.focusEvents.push(func);
+        }
     },
     
     setupMousePause: function() {
@@ -387,9 +389,11 @@ var Sequence = Class.create({
     
     focusElement: function(element) {
         // Call any focus callbacks
-        this.focusEvents.each(function(func) {
-            func(element);
-        }.bind(this));
+        if (this.focusEvents) {
+            this.focusEvents.each(function(func) {
+                func(element);
+            }.bind(this));
+        }
         
         this.currentKeyScrollElement = element;
         this.currentElement = element;
