@@ -387,14 +387,7 @@ var Sequence = Class.create({
         }  
     },
     
-    focusElement: function(element) {
-        // Call any focus callbacks
-        if (this.focusEvents) {
-            this.focusEvents.each(function(func) {
-                func(element);
-            }.bind(this));
-        }
-        
+    focusElement: function(element) {        
         this.currentKeyScrollElement = element;
         this.currentElement = element;
         
@@ -404,6 +397,13 @@ var Sequence = Class.create({
         
         // add a focus class so we can style it
         element.element.classNames().add(this.options.focusedClass);
+        
+        // Call any focus callbacks
+        if (this.focusEvents) {
+            this.focusEvents.each(function(func) {
+                func(element);
+            }.bind(this));
+        }
     },
     
     toggleButton: function(buttonName, show) {
