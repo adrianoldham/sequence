@@ -457,9 +457,7 @@ var Sequence = Class.create({
         return;
     },
     
-    setupPageButtons: function() {
-        var isIE = (/MSIE (5\.5|6\.)/.test(navigator.userAgent) && navigator.platform == "Win32");
-        
+    setupPageButtons: function() {        
         [ 'previous', 'next' ].each(function(buttonName) {
             var pageClass = this.options[buttonName + "PageClass"];
             var button = this.wrapper.getElementsBySelector("." + pageClass).first();
@@ -484,7 +482,7 @@ var Sequence = Class.create({
             }.bind(this, buttonName, methodName));
             
             // if IE create a separate button for disabled  state
-            if (isIE) {
+            if (hasNoAlphaSupport) {
                 var disablePageClass = this.options[buttonName + "DisabledClass"];
                 var disableButton = new Element("div", { 'class': disablePageClass });
 
