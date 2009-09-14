@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" charset="utf-8" src="../lib/prototype.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../lib/scriptaculous.js?load=effects"></script>
+    <script type="text/javascript" charset="utf-8" src="../lib/helper.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/sequence.js"></script>
+
+    <title>Single Item Sequence Demo</title>
+
+    <style type="text/css" media="screen">
+        body {
+            text-align: center;
+        }
+
+        #sequence {
+            font: normal 1em/1.5em Helvetica, Arial, Verdana, sans-serif;
+            width: 30em;
+            height: 1.5em;
+            position: relative;
+            border: 1px solid #ccc;
+            margin:  8em auto;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        ul.container, ul.container li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            height: 1.5em;
+            width: 100%;
+            float: left;
+        }
+
+        ul.container a {
+            margin: 0;
+            padding: 0 0.5em;
+            color: #666;
+            display: block;
+            text-decoration: none;
+            float: left;
+            width: 29em;
+            /*white-space: nowrap;*/
+        }
+
+        ul.container a:hover {
+            color: #333;
+            text-decoration: underline;
+        }
+
+        ul.container a:hover:after {
+            content: " >";
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="sequence">
+        <ul class="container">
+            <li><a href="#">News item one</a></li>
+            <li><a href="#">News item two</a></li>
+            <li><a href="#">News item three</a></li>
+            <li><a href="#">News item four</a></li>
+            <li><a href="#">News item five</a></li>
+            <li><a href="#">News item six</a></li>
+            <li><a href="#">News item seven</a></li>
+            <li><a href="#">News item eight</a></li>
+            <li><a href="#">News item nine</a></li>
+            <li><a href="#">News item ten</a></li>
+        </ul>
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+        function runTest() {
+            new Sequence("sequence", "#sequence li", {
+                orientation: "vertical",
+                autoScrollDelay: 2,
+                scrollDuration: 0.5,
+                autoScrollFinishAction: "rewind"
+            });
+        }
+
+        Event.observe(window, "load", runTest);
+    </script>
+</body>
+</html>
