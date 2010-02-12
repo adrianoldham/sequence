@@ -363,6 +363,11 @@ var Sequence = Class.create({
                 this.toggleButton('previous', this.scrollPosition > 0);
                 this.toggleButton('next', this.scrollPosition < this.holderSize - this.containerSize);
             }
+        } else {
+            if (this.elements.length <= 1) {
+                this.toggleButton('previous', false);
+                this.toggleButton('next', false);
+            }
         }
     },
     

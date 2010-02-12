@@ -17,7 +17,7 @@
             text-align: center;
         }
 	
-        #sequence, #sequence2 {
+        #sequence, #sequence2, #sequence3 {
             width: 400px;
 	        height: 52px;
 	        position: relative;
@@ -129,6 +129,12 @@
             <a href="#"><img src="images/13.png"/></a>
         </div>
     </div>
+    
+    <div id="sequence3">
+        <div class="container">
+            <a href="#"><img src="images/8.png"/></a>            
+        </div>
+    </div>
 
     <script type="text/javascript" charset="utf-8">
 		// create lazyloaders with dom:loaded or at the bottom of a html page
@@ -138,9 +144,11 @@
         function runTest() {
 			// pass lazy loader into sequence and it sets it up automatically
             new Sequence("sequence2", "#sequence2 a", { autoScroll: true, lazyLoader: lazy2, lazyLoadThreshold: 2 }); // look ahead two items
+            
             var sequence = new Sequence("sequence", "#sequence a", { autoScroll: true, lazyLoader: lazy }); // default is look ahead one item
-
 			sequence.addFocusEvent(function() { console.log('Focus has been called'); })
+			
+            new Sequence("sequence3", "#sequence3 a", { autoScroll: true, pagingLoop: true });
         }
         
         Event.observe(window, "load", runTest);
