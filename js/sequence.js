@@ -49,6 +49,7 @@ var Sequence = Class.create({
         pausedClass: 'paused',
         pausedText: 'Paused',
         showPauseIndicator: true,
+        iePNGFix: true,
         // Lazy Loader options
         
         lazyLoader: null,
@@ -471,9 +472,7 @@ var Sequence = Class.create({
                 button = new Element("div", { 'class': pageClass });
                 this.wrapper.appendChild(button);
             }
-            
-            button.iePNGFix();
-            
+                        
             // use different methods for next page and next item
             var methodName;
             if (this.options.pagingType == "per-page") {
@@ -487,10 +486,11 @@ var Sequence = Class.create({
             }.bind(this, buttonName, methodName));
             
             // if IE create a separate button for disabled  state
-            if (hasNoAlphaSupport) {
+            if (hasNoAlphaSupport && this.options.iePNGFix == true) {
                 var disablePageClass = this.options[buttonName + "DisabledClass"];
                 var disableButton = new Element("div", { 'class': disablePageClass });
 
+                button.iePNGFix();
                 button.insert({ after: disableButton });
 
                 disableButton.iePNGFix();
