@@ -44,12 +44,15 @@ var Sequence = Class.create({
         keyScrollLoop: true,
         useKeyScroll: true,
         smoothScroll: true,                             // new option: if false, then scrolling just "snaps"
-        scrollDuration: 1,
+        scrollDuration: 0.5,
         useMouseStop: false,
         pausedClass: 'paused',
         pausedText: 'Paused',
         showPauseIndicator: true,
         iePNGFix: true,
+        iePNGFixBlankPixel: null,                       // Null, uses iePNGFix default of "/images/blank.gif"
+        iePNGFixSizingMethod: null,                     // Null, uses iePNGFix default of "scaled"
+
         // Lazy Loader options
         
         lazyLoader: null,
@@ -490,10 +493,10 @@ var Sequence = Class.create({
                 var disablePageClass = this.options[buttonName + "DisabledClass"];
                 var disableButton = new Element("div", { 'class': disablePageClass });
 
-                button.iePNGFix();
+                button.iePNGFix(this.options.iePNGFixBlankPixel,this.options.iePNGFixSizingMethod);
                 button.insert({ after: disableButton });
 
-                disableButton.iePNGFix();
+                disableButton.iePNGFix(this.options.iePNGFixBlankPixel,this.options.iePNGFixSizingMethod);
                 disableButton.hide();
                 
                 this[buttonName + "DisableButton"] = disableButton;
