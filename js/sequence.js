@@ -25,7 +25,7 @@ var Sequence = Class.create({
         centerFocus: true,
         focusedClass: "focused",
         containerClass: "container",
-        containerOverflow: "visible",
+        containerOverflow: "hidden",
         orientation: "horizontal",
         firstClass: "first",
         lastClass: "last",
