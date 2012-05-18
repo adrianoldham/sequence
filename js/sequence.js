@@ -489,7 +489,7 @@ var Sequence = Class.create({
             }.bind(this, buttonName, methodName));
             
             // if IE create a separate button for disabled  state
-            if (hasNoAlphaSupport && this.options.iePNGFix == true) {
+            if (hasNoAlphaSupport && this.options.iePNGFix) {
                 var disablePageClass = this.options[buttonName + "DisabledClass"];
                 var disableButton = new Element("div", { 'class': disablePageClass });
 
