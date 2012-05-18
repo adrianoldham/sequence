@@ -25,6 +25,7 @@ var Sequence = Class.create({
         centerFocus: true,
         focusedClass: "focused",
         containerClass: "container",
+        containerOverflow: "visible",
         orientation: "horizontal",
         firstClass: "first",
         lastClass: "last",
@@ -185,7 +186,7 @@ var Sequence = Class.create({
     },
     
     setupContainer: function() {
-        this.container.setStyle({ position: "relative", overflow: "hidden" });
+        this.container.setStyle({ position: "relative", overflow: this.options.containerOverflow });
         this.holder = new Element("div");
         this.holder.setStyle({ position: "absolute" });
         this.container.appendChild(this.holder);
