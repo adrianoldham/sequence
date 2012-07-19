@@ -193,9 +193,9 @@ var Sequence = Class.create({
         
         // depending on orientation set starting size
         if (this.options.orientation == "horizontal") {
-            this.holder.setStyle({ width: 0 });
+            this.holder.setStyle({ width: 0, height: "100%" });
         } else {
-            this.holder.setStyle({ height: 0 });            
+            this.holder.setStyle({ height: 0, width: "100%" });            
         }
     },
     
