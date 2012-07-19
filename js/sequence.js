@@ -223,8 +223,8 @@ var Sequence = Class.create({
         this.elements = [];
         
         // add in first and last classes
-        elements.first().classNames().add(this.options.firstClass);
-        elements.last().classNames().add(this.options.lastClass);
+        elements.first().addClassName(this.options.firstClass);
+        elements.last().addClassName(this.options.lastClass);
         
         // setup the elements
         elements.each(function(element) {
@@ -402,11 +402,11 @@ var Sequence = Class.create({
         this.currentElement = element;
         
         this.elements.each(function(e) {
-            e.element.classNames().remove(this.options.focusedClass);
+            e.element.removeClassName(this.options.focusedClass);
         }.bind(this));
         
         // add a focus class so we can style it
-        element.element.classNames().add(this.options.focusedClass);
+        element.element.addClassName(this.options.focusedClass);
         
         // Call any focus callbacks
         if (this.focusEvents) {
